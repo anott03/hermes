@@ -10,7 +10,7 @@ export default function Dash() {
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-[#fbf9fc]">
-      <div className="bg-white min-w-[400px] max-w-[600px] min-h-[400px] max-h-[600px] w-4/12 h-[75%] rounded rounded-lg shadow-xl drop-shadow-xl shadow-purple-500 flex flex-col justify-center items-end">
+      <div className="bg-white min-w-[500px] max-w-[600px] min-h-[500px] max-h-[600px] w-4/12 h-[75%] rounded rounded-lg shadow-xl drop-shadow-xl shadow-purple-500 flex flex-col justify-center items-end">
         {step == 0 && (
           <FileUpload
             nextStep={(_file: File) => {
