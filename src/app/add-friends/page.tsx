@@ -4,9 +4,11 @@ import { ArrowRight } from "@/components/Icons";
 import { FormEventHandler, useState } from "react";
 
 export default function FileSend() {
-  var [friends, setFriends] = useState<string[]>([]);
+  let [showWarning, setShowWarning] = useState(false);
+  let [friends, setFriends] = useState<string[]>([]);
   const addFriend: FormEventHandler<HTMLFormElement> = (e: any) => {
     e.preventDefault();
+    setShowWarning(false);
     setFriends([...friends, e.target["inpt"].value]);
     e.target.reset();
   };
@@ -25,17 +27,26 @@ export default function FileSend() {
           Once they accept your friend request, you will be able to send them
           files.
         </small>
+        {showWarning && (
+          <p className="p-2 bg-red-200 text-xs text-red-800 mt-3 border">
+            Please enter a valid email address
+          </p>
+        )}
         <form
-          className="flex flex-row border border-black mt-3"
+          className="flex flex-row border border-purple-600 mt-3"
           onSubmit={addFriend}
         >
           <input
             id="inpt"
-            type="text"
+            type="email"
+            onInvalid={(e: any) => {
+              e.preventDefault();
+              setShowWarning(true);
+            }}
             className="w-full p-2 text-sm focus:outline-none"
             placeholder="Enter an email address"
           />
-          <button type="submit" className="p-2">
+          <button type="submit" className="p-2 text-purple-600">
             <ArrowRight />
           </button>
         </form>
