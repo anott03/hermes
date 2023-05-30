@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 ::file-selector-button {
-  display: none;
+    display: none;
 }
