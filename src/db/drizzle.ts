@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 import { connect } from "@planetscale/database";
-// import * as schema from "@/db/schema";
+import { usersTable } from "@/db/schema";
 
 const connection = connect({
   host: process.env["DATABASE_HOST"],
@@ -9,3 +9,15 @@ const connection = connect({
 });
 
 export const db = drizzle(connection);
+
+export async function registerUser(
+  clerkId: string,
+  name: string,
+  email: string
+) {
+  await db.insert(usersTable).values({ clerkId, name, email });
+}
+
+export async function listUsers() {
+  return db.select().from(usersTable);
+}

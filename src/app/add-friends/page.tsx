@@ -1,11 +1,24 @@
 "use client";
 
 import { ArrowRight } from "@/components/Icons";
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 
 export default function FileSend() {
   let [showWarning, setShowWarning] = useState(false);
   let [friends, setFriends] = useState<string[]>([]);
+
+  useEffect(() => {
+    // fetch("/api/user", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     name: "John Doe",
+    //     email: "john@example.com",
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((json) => console.log(json));
+  });
+
   const addFriend: FormEventHandler<HTMLFormElement> = (e: any) => {
     e.preventDefault();
     setShowWarning(false);
@@ -17,7 +30,17 @@ export default function FileSend() {
     setFriends(friends.filter((friend) => friend !== f));
   };
 
-  const save = () => {};
+  const save = () => {
+    fetch("/api/friends", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        friends,
+      }),
+    });
+  };
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center bg-[#fbf9fc]">
