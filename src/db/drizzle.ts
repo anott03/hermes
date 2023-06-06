@@ -67,3 +67,23 @@ export async function getIdByEmail(email: string) {
     assert(matches.length == 1);
     return matches[0].id;
 }
+
+export async function sendFriendRequest(userClerkId: string, friendId: number) {
+    const sender = await db.query.usersTable.findFirst({
+        where: eq(usersTable.clerkId, userClerkId),
+    });
+    if (!sender) { return false; }
+    const receiver = await db.query.usersTable.findFirst({
+        where: eq(usersTable.id, friendId)
+    });
+    if (!receiver) { return false; }
+
+    db.insert(notificationsTable).values({
+        senderId: sender.id,
+        recipientId: receiver.id,
+        type: "FRIEND REQUEST",
+        message: `${sender.name} <${sender.email}> would like to be your friend.`,
+    });
+
+    return true;
+}

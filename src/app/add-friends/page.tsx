@@ -1,21 +1,21 @@
 "use client";
 
 import { ArrowRight } from "@/components/Icons";
-import { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useState } from "react";
 
 export default function FileSend() {
-    let [showWarning, setShowWarning] = useState(false);
-    let [friends, setFriends] = useState<string[]>([]);
+    const [showWarning, setShowWarning] = useState(false);
+    const [newFriends, setNewFriends] = useState<string[]>([]);
 
     const addFriend: FormEventHandler<HTMLFormElement> = (e: any) => {
         e.preventDefault();
         setShowWarning(false);
-        setFriends([...friends, e.target["inpt"].value]);
+        setNewFriends([...newFriends, e.target["inpt"].value]);
         e.target.reset();
     };
 
     const removeFriend = (f: string) => {
-        setFriends(friends.filter((friend) => friend !== f));
+        setNewFriends(newFriends.filter((friend) => friend !== f));
     };
 
     const save = () => {
@@ -25,7 +25,7 @@ export default function FileSend() {
                 "content-type": "application/json",
             },
             body: JSON.stringify({
-                friends,
+                friends: newFriends,
             }),
         });
     };
@@ -50,7 +50,7 @@ export default function FileSend() {
                     <input
                         id="inpt"
                         type="email"
-                        onInvalid={(e: any) => {
+                        onInvalid={e => {
                             e.preventDefault();
                             setShowWarning(true);
                         }}
@@ -62,7 +62,7 @@ export default function FileSend() {
                     </button>
                 </form>
                 <ul className="w-full h-full flex flex-col p-5 overflow-scroll">
-                    {friends.map((friend, i) => (
+                    {newFriends.map((friend, i) => (
                         <li
                             key={i}
                             className="my-1 hover:cursor-pointer hover:line-through"

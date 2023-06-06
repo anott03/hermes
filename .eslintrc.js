@@ -10,6 +10,7 @@ module.exports = {
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended",
+        "plugin:react/jsx-runtime",
     ],
     parser: "@typescript-eslint/parser",
     parserOptions: {
@@ -25,5 +26,7 @@ module.exports = {
             version: "detect",
         },
     },
-    rules: {},
+    rules: {
+        "react/no-unescaped-entities": 0
+    },
 };
