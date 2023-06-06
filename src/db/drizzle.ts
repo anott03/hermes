@@ -1,6 +1,8 @@
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 import { connect } from "@planetscale/database";
 import { usersTable } from "@/db/schema";
+import * as schema from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 const connection = connect({
     host: process.env["DATABASE_HOST"],
@@ -8,7 +10,7 @@ const connection = connect({
     password: process.env["DATABASE_PASSWORD"],
 });
 
-export const db = drizzle(connection);
+export const db = drizzle(connection, { schema });
 
 export async function registerUser(
     clerkId: string,
@@ -19,5 +21,12 @@ export async function registerUser(
 }
 
 export async function listUsers() {
-    return db.select().from(usersTable);
+    return await db.select().from(usersTable);
+}
+
+export async function getUser(clerkId: string) {
+    return await db
+        .select()
+        .from(usersTable)
+        .where(eq(usersTable.clerkId, clerkId));
 }

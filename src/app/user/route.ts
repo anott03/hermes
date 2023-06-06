@@ -1,21 +1,26 @@
-import { listUsers, registerUser } from "@/db/drizzle";
+import { listUsers, registerUser, getUser } from "@/db/drizzle";
 import {
     SignedInAuthObject,
     SignedOutAuthObject,
+    clerkClient,
     getAuth,
 } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 async function newUser(auth: SignedInAuthObject | SignedOutAuthObject) {
-    console.log("newUser()");
-    console.log(auth);
-    if (auth.session) {
-        registerUser(
-            auth.user?.id || "",
-            auth.user?.firstName || "",
-            auth.user?.emailAddresses[0].emailAddress || ""
-        );
-        console.log("new user!", auth.userId);
+    const { userId } = auth;
+    if (userId) {
+        const user = await clerkClient.users.getUser(userId);
+        const u = await getUser(user.id);
+        if (u.length === 0) {
+            await registerUser(
+                user.id || "",
+                user.firstName || "",
+                user.emailAddresses[0].emailAddress || ""
+            );
+        } else {
+            console.log("user exists");
+        }
     }
 }
 

@@ -1,7 +1,11 @@
 import { ArrowRight } from "@/components/Icons";
+import { auth } from "@clerk/nextjs/app-beta";
 import Link from "next/link";
 
 export default function Home() {
+    const a = auth();
+    console.log(a);
+
     return (
         <div className="text-stone-800 w-full h-full flex flex-col justify-center">
             <div className="mx-auto max-w-7xl p-6 w-full flex flex-col items-start">

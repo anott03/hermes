@@ -7,18 +7,6 @@ export default function FileSend() {
     let [showWarning, setShowWarning] = useState(false);
     let [friends, setFriends] = useState<string[]>([]);
 
-    useEffect(() => {
-        // fetch("/api/user", {
-        //   method: "POST",
-        //   body: JSON.stringify({
-        //     name: "John Doe",
-        //     email: "john@example.com",
-        //   }),
-        // })
-        //   .then((res) => res.json())
-        //   .then((json) => console.log(json));
-    });
-
     const addFriend: FormEventHandler<HTMLFormElement> = (e: any) => {
         e.preventDefault();
         setShowWarning(false);
