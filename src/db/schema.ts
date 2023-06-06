@@ -13,7 +13,7 @@ export const usersTable = mysqlTable("users", {
 export const notificationsTable = mysqlTable("notifications", {
     id: int("id").autoincrement().primaryKey(),
     senderId: int("sender_id").notNull(),
-    recieverId: int("reciever_id").notNull(),
+    recipientId: int("recipient_id").notNull(),
     type: text("type").notNull(),
     message: text("message").notNull(),
 });
