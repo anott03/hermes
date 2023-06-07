@@ -1,22 +1,14 @@
 import { InferModel } from "drizzle-orm";
-// import { pgTable, serial, text } from "drizzle-orm/pg-core";
-import { mysqlTable, int, text } from "drizzle-orm/mysql-core";
+import { int, text, mysqlTableCreator } from "drizzle-orm/mysql-core";
 
-export const usersTable = mysqlTable("users", {
-    id: int("id").autoincrement().primaryKey(),
-    clerkId: text("clerkId").notNull(),
-    name: text("name").notNull(),
-    email: text("email").notNull(),
-    friends: text("friends"),
-});
+const hermesMySqlTable = mysqlTableCreator((name) => `projectA_${name}`)
 
-export const notificationsTable = mysqlTable("notifications", {
+export const notifications = hermesMySqlTable("notifications", {
     id: int("id").autoincrement().primaryKey(),
-    senderId: int("sender_id").notNull(),
-    recipientId: int("recipient_id").notNull(),
+    senderId: text("sender_id").notNull(),
+    recipientEmail: text("recipient_email").notNull(),
     type: text("type").notNull(),
     message: text("message").notNull(),
 });
-
-export type User = InferModel<typeof usersTable>;
-export type NewUser = InferModel<typeof usersTable, "insert">;
+export type Notification = InferModel<typeof notifications>
+export type NewNotification = InferModel<typeof notifications, "insert">
