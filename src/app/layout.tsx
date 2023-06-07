@@ -1,7 +1,7 @@
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Heart, Github } from "@/components/Icons";
+import Nav from "@/components/Nav";
 
 export const metadata = {
     title: "Hermes",
@@ -18,20 +18,12 @@ export default function RootLayout({
             <ClerkProvider
                 appearance={{
                     variables: { colorPrimary: "#8b5cf6", colorText: "black" },
-                    elements: { userButtonPopoverFooter: "hidden" },
+                    elements: { userButtonPopoverFooter: "hidden", userButtonBox: "p-2" },
                 }}
             >
                 <body>
                     <main className="w-screen h-screen flex flex-col bg-[#fbf9fc]">
-                        <nav className="max-w-7xl mx-auto p-6 flex flex-row justify-between items-center w-full ">
-                            <p className="text-2xl">Hermes</p>
-                            <SignedIn>
-                                <UserButton />
-                            </SignedIn>
-                            <SignedOut>
-                                <button>Sign In</button>
-                            </SignedOut>
-                        </nav>
+                        <Nav />
                         {children}
                         {/* <footer className="w-full bg-stone-800 text-stone-400"> */}
                         <footer className="w-full text-purple-400">
@@ -42,9 +34,9 @@ export default function RootLayout({
                                     </small>
                                 </div>
                                 <div>
-                                    <button>
+                                    <a href="https://github.com/anott03/hermes">
                                         <Github />
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </footer>
