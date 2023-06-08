@@ -1,10 +1,11 @@
 import { InferModel } from "drizzle-orm";
 import { int, text, mysqlTableCreator } from "drizzle-orm/mysql-core";
+import type { User as ClerkUser } from "@clerk/nextjs/server";
 
-const hermesMySqlTable = mysqlTableCreator((name) => `projectA_${name}`)
+const hermesMySqlTable = mysqlTableCreator((name) => `hermes_${name}`)
 
 export const notifications = hermesMySqlTable("notifications", {
-    id: int("id").autoincrement().primaryKey(),
+    id: int("ID").autoincrement().primaryKey(),
     senderId: text("sender_id").notNull(),
     recipientEmail: text("recipient_email").notNull(),
     type: text("type").notNull(),
@@ -12,3 +13,7 @@ export const notifications = hermesMySqlTable("notifications", {
 });
 export type Notification = InferModel<typeof notifications>
 export type NewNotification = InferModel<typeof notifications, "insert">
+
+export interface User extends ClerkUser {
+    privateMetadata: Record<string, string[]>
+}

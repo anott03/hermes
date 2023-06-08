@@ -10,7 +10,8 @@ export default function FileSend() {
     const addFriend: FormEventHandler<HTMLFormElement> = (e: any) => {
         e.preventDefault();
         setShowWarning(false);
-        setNewFriends([...newFriends, e.target["inpt"].value]);
+        const email = e.target["inpt"].value;
+        setNewFriends([...newFriends, email]);
         e.target.reset();
     };
 
@@ -27,6 +28,10 @@ export default function FileSend() {
             body: JSON.stringify({
                 friends: newFriends,
             }),
+        })
+        .then(res => res.json())
+        .then(json => {
+            if (json.success === false) console.log("Error adding friends.");
         });
     };
 
