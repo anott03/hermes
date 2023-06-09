@@ -12,6 +12,11 @@ export default async function Notifications() {
         return NextResponse.redirect("http://localhost:3000/sign-in");
     }
     const user = await clerkClient.users.getUser(userId) as User;
+    /* FOR TESTING PURPOSES ONLY */
+    // await clerkClient.users.updateUser(user.id, {
+    //     privateMetadata: { friends: [] },
+    // });
+    /* -------------------------- */
     const userEmail = user.emailAddresses[0].emailAddress;
     const userNotifications = await db.query.notifications.findMany({
         where: eq(notifications.recipientEmail, userEmail)
@@ -20,7 +25,7 @@ export default async function Notifications() {
     const rejectNotification = async (i: number) => {
         "use server";
         const n = userNotifications[i];
-        db.delete(notifications)
+        await db.delete(notifications)
             .where(eq(notifications.id, n.id))
             .execute();
         revalidatePath("/notifications");
@@ -34,21 +39,22 @@ export default async function Notifications() {
 
         const n = userNotifications[i];
         const friend = await clerkClient.users.getUser(n.senderId) as User;
-        const friendFriends = friend.privateMetadata.friends;
+        const friendFriends = friend.privateMetadata.friends || [];
         await clerkClient.users.updateUser(friend.id, {
             privateMetadata: {
-                friends: [...friendFriends, user.id],
+                friends: [...friendFriends, u.id],
             }
         });
-        await clerkClient.users.updateUser(user.id, {
+        await clerkClient.users.updateUser(u.id, {
             privateMetadata: {
-                friends: [...u.privateMetadata.friends, friend.id],
+                friends: [...u.privateMetadata.friends || [], friend.id],
             }
         });
-        db.delete(notifications)
+        await db.delete(notifications)
             .where(eq(notifications.id, n.id))
             .execute();
         revalidatePath("/notifications");
+        revalidatePath("/add-friends");
     }
 
     return (
@@ -71,11 +77,11 @@ export default async function Notifications() {
                             <div className="w-full justify-end flex flex-row">
                                 <form action={async () => {
                                     "use server";
-                                    acceptNotification(i)
+                                    rejectNotification(i)
                                 }}><button className="p-2 text-sm hover:bg-violet-100">Decline</button></form>
                                 <form action={async () => {
                                     "use server";
-                                    rejectNotification(i)
+                                    acceptNotification(i)
                                 }}><button className="p-2 text-sm hover:bg-violet-100">Accept</button></form>
                             </div>
                         </div>
