@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { RefreshCw } from "@/components/Icons";
+import { Suspense } from "react";
 
 export default async function Notifications() {
     const { userId } = auth();
@@ -71,25 +72,27 @@ export default async function Notifications() {
                 </div>
                 <div className="w-full h-full flex-1">
                     <div className="border-b border-violet-300"></div>
-                    {userNotifications.length > 0 ? userNotifications.map((notification, i) =>
-                        <div key={i} className="p-2 flex flex-col border-b border-violet-300">
-                            <p className="text-sm">{notification.message}</p>
-                            <div className="w-full justify-end flex flex-row">
-                                <form action={async () => {
-                                    "use server";
-                                    rejectNotification(i)
-                                }}><button className="p-2 text-sm hover:bg-violet-100">Decline</button></form>
-                                <form action={async () => {
-                                    "use server";
-                                    acceptNotification(i)
-                                }}><button className="p-2 text-sm hover:bg-violet-100">Accept</button></form>
+                    <Suspense fallback={<p>Loading...</p>}>
+                        {userNotifications.length > 0 ? userNotifications.map((notification, i) =>
+                            <div key={i} className="p-2 flex flex-col border-b border-violet-300">
+                                <p className="text-sm">{notification.message}</p>
+                                <div className="w-full justify-end flex flex-row">
+                                    <form action={async () => {
+                                        "use server";
+                                        rejectNotification(i)
+                                    }}><button className="p-2 text-sm hover:bg-violet-100">Decline</button></form>
+                                    <form action={async () => {
+                                        "use server";
+                                        acceptNotification(i)
+                                    }}><button className="p-2 text-sm hover:bg-violet-100">Accept</button></form>
+                                </div>
                             </div>
-                        </div>
-                    ) :
-                        <div className="w-full h-full flex-1 flex flex-col justify-center items-center">
-                            <p className="text-sm">Your inbox is empty!</p>
-                        </div>
-                    }
+                        ) :
+                            <div className="w-full h-full flex-1 flex flex-col justify-center items-center">
+                                <p className="text-sm">Your inbox is empty!</p>
+                            </div>
+                        }
+                    </Suspense>
                 </div>
             </div>
         </div>

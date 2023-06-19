@@ -4,6 +4,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import Form from "@/components/friendForm";
+import { Suspense } from "react";
 
 export default async function FileSend() {
     const { userId } = auth();
@@ -85,31 +86,35 @@ export default async function FileSend() {
                 <Form addFriend={addFriend} />
 
                 <p className="my-2">Pending Requests</p>
-                <div className="max-h-[30%] flex flex-col gap-1">
-                    {sentRequests.map((req, i) => (
+                <Suspense fallback={<p>Loading...</p>}>
+                    <div className="max-h-[30%] flex flex-col gap-1">
+                        {sentRequests.map((req, i) => (
+                            <div key={i} className="w-full flex flex-row justify-between">
+                                <p className="text-sm">{req.recipientEmail}</p>
+                                <form action={async () => {
+                                    "use server";
+                                    await cancelRequest(i);
+                                }}>
+                                    <button>x</button>
+                                </form>
+                            </div>
+                        ))}
+                    </div>
+                </Suspense>
+                <p className="my-2">My Friends</p>
+                <Suspense fallback={<p>Loading...</p>}>
+                    {friends.map((friend, i) => (
                         <div key={i} className="w-full flex flex-row justify-between">
-                            <p className="text-sm">{req.recipientEmail}</p>
+                            <p className="text-sm">{`${friend.firstName} ${friend.lastName} <${friend.emailAddresses[0].emailAddress}>`}</p>
                             <form action={async () => {
                                 "use server";
-                                await cancelRequest(i);
+                                await removeFriend(i);
                             }}>
                                 <button>x</button>
                             </form>
                         </div>
                     ))}
-                </div>
-                <p className="my-2">My Friends</p>
-                {friends.map((friend, i) => (
-                    <div key={i} className="w-full flex flex-row justify-between">
-                        <p className="text-sm">{`${friend.firstName} ${friend.lastName} <${friend.emailAddresses[0].emailAddress}>`}</p>
-                        <form action={async () => {
-                            "use server";
-                            await removeFriend(i);
-                        }}>
-                            <button>x</button>
-                        </form>
-                    </div>
-                ))}
+                </Suspense>
             </div>
         </div>
     );
